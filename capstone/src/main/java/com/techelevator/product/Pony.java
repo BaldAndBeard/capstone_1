@@ -11,6 +11,7 @@ public class Pony extends Product{
         this.pennyPrice = pennyPrice;
 
         String animalSound = "Neigh, Neigh, Yay!";
+        int remainingQuantity = 5;
 
     }
     @Override

@@ -11,11 +11,12 @@ public class Cat extends Product{
         this.pennyPrice = pennyPrice;
 
         String animalSound = "Meow, Meow, Meow!";
+        int remainingQuantity = 5;
 
     }
     @Override
     public String toString(){
-        return slotLocation + " "+productName +" "+ pennyPrice ;
+        return slotLocation + " "+productName +" "+ pennyPrice;
     }
 
 }

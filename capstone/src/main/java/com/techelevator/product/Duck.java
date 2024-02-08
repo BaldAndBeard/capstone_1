@@ -12,6 +12,7 @@ public class Duck extends Product{
 
 
         String animalSound = "Quack, Quack, Splash!";
+        int remainingQuantity = 5;
 
     }
 

@@ -11,6 +11,7 @@ public class Penguin extends Product{
         this.pennyPrice = pennyPrice;
 
         String animalSound = "Squawk, Squawk, Whee!";
+        int remainingQuantity = 5;
 
     }
 
