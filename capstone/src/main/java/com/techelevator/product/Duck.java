@@ -15,4 +15,8 @@ public class Duck extends Product{
 
     }
 
+    @Override
+    public String toString(){
+        return slotLocation + " "+productName +" "+ pennyPrice ;
+    }
 }

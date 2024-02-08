@@ -13,6 +13,9 @@ public class Cat extends Product{
         String animalSound = "Meow, Meow, Meow!";
 
     }
-
+    @Override
+    public String toString(){
+        return slotLocation + " "+productName +" "+ pennyPrice ;
+    }
 
 }

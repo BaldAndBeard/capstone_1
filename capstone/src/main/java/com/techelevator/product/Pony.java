@@ -13,6 +13,9 @@ public class Pony extends Product{
         String animalSound = "Neigh, Neigh, Yay!";
 
     }
-
+    @Override
+    public String toString(){
+        return slotLocation + " "+productName +" "+ pennyPrice ;
+    }
 
 }
