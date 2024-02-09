@@ -14,8 +14,7 @@ public class MainMenu {
         String menuChoice = "";
 
         // Create instance of LoadInventory and run it's main method to create Products
-        LoadInventory productsList = new LoadInventory();
-        productsList.load();
+          LoadInventory productsList = LoadInventory.getInstance();
 
         // Set loop to continue as long as they do not exit
         while (!menuChoice.equals("3")) {
@@ -29,14 +28,16 @@ public class MainMenu {
             // Print out list of available items for purchase including price and quantity
             if (menuChoice.equals("1")) {
 
-                System.out.println("********************");
-                System.out.println();
+                System.out.println("*******************************************");
+                System.out.println(String.format( "%s %18s %7s %10s ","Slot", "Product Name","Price", "Quantity" ));
                 for (int i = 0; i < productsList.getAllProducts().size(); i++) {
-
-                    System.out.println(productsList.getAllProducts().get(i));
+                    String slotLocation = productsList.getAllProducts().get(i).getSlotLocation();
+                    int quantity  = productsList.getAllProducts().get(i).getInitialQuantity();
+                    String name = productsList.getAllProducts().get(i).getProductName();
+                    int price = productsList.getAllProducts().get(i).getPennyPrice();
+                    System.out.println(String.format( "%s %20s %6.2f$ %4d ",slotLocation, name,Double.valueOf(price / 100.00), quantity ));
                 }
-                System.out.println();
-                System.out.println("********************");
+                System.out.println("*******************************************");
 
                 // Run Transaction Class methods
             } else if (menuChoice.equals("2")) {
@@ -50,12 +51,6 @@ public class MainMenu {
 
                 // Hidden Menu Option that shows total balance of Vending Machine
             } else if (menuChoice.equals("4")) {
-//                for (int i = 0; i < productsList.getAllProducts().size(); i++) {
-//
-//                    System.out.println(productsList.getAllProducts().get(i).getProductName() + "," + (5 - productsList.getAllProducts().get(i).getInitialQuantity()));
-//                }
-//
-//                System.out.println(String.format("%nTotal Balance: %.2f", ((double) Transactions.getTotalBalance() / 100)));
 
                 createSalesReport(productsList);
 

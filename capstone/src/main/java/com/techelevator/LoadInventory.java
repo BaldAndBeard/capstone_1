@@ -46,8 +46,20 @@ public class LoadInventory {
         return allSlotLocations;
     }
 
+    private static LoadInventory single_instance = null;
+    private  LoadInventory()
+    {
+        load();
+    }
+    public static synchronized LoadInventory getInstance()
+    {
+        if (single_instance == null)
+            single_instance = new LoadInventory();
+        return single_instance;
+    }
+
     // METHODS
-    public static void load() {
+    private static void load() {
         // Create a File object using the path
         File inPutFile = new File("vendingmachine.csv");
         // Open the file

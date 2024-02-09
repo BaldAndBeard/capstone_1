@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Transactions  {
 
     private static int workingBalance = 0;
     private static int totalBalance = 0;
-
     private static File vendingLog = new File("vending.log");
 
     public static int getTotalBalance () {
@@ -56,26 +56,22 @@ public class Transactions  {
         System.out.println(String.format("Current Money Provided : %.2f$ %n ",Double.valueOf(workingBalance / 100.00)));
 
         // Update Vending Log
-        try (
-                PrintWriter writeFile = new PrintWriter(new FileOutputStream(vendingLog, true));
-        ) {
-
-            writeFile.println(LocalDateTime.now() + String.format(" FEED MONEY: $%.2f $%.2f %n", Double.valueOf(amountEntered / 100.00), Double.valueOf(workingBalance / 100.00)));
-
-        } catch (Exception ex) {
-            // Alligator Code
-        }
+        updateLog("","",amountEntered, workingBalance,0);
 
     }
 
     public static void selectProduct(Scanner userInput, LoadInventory productsList) {
 
-
-        System.out.println(String.format("********************%n"));
+        System.out.println("*******************************************");
+        System.out.println(String.format( "%s %18s %7s %10s ","Slot", "Product Name","Price", "Quantity" ));
         for (int i = 0; i < productsList.getAllProducts().size(); i++) {
-            System.out.println(productsList.getAllProducts().get(i));
+            String slotLocation = productsList.getAllProducts().get(i).getSlotLocation();
+            int quantity  = productsList.getAllProducts().get(i).getInitialQuantity();
+            String name = productsList.getAllProducts().get(i).getProductName();
+            int price = productsList.getAllProducts().get(i).getPennyPrice();
+            System.out.println(String.format( "%s %20s %6.2f$ %4d ",slotLocation, name,Double.valueOf(price / 100.00), quantity ));
         }
-        System.out.println(String.format("%n********************"));
+        System.out.println("*******************************************");
 
         System.out.println("Please enter a code to select an item ");
 
@@ -120,18 +116,11 @@ public class Transactions  {
                         workingBalance -= price;
                         // Increase totalBalance by the price of the item purchased
                         totalBalance += price;
-                        System.out.println(productsList.getAllProducts().get(i).getInitialQuantity());
+                        System.out.println(String.format("Remaining quantity :%s",productsList.getAllProducts().get(i).getInitialQuantity()));
                         System.out.println(String.format("Selected Item is %s, Price is %.2f, Remaining Balance is %.2f %n%s%n ", name, Double.valueOf(price / 100.00), Double.valueOf(workingBalance / 100.00), sound));
 
-
                         // Update Vending Log
-                        try (PrintWriter writeFile = new PrintWriter(new FileOutputStream(vendingLog, true))) {
-
-                            writeFile.println(LocalDateTime.now() + String.format(" %s  %s $%.2f $%.2f %n", name, slotLocation, Double.valueOf(price / 100.00), Double.valueOf(workingBalance / 100.00)));
-
-                        } catch (Exception ex) {
-                            // Alligator Code
-                        }
+                        updateLog(name,slotLocation,price, workingBalance,1);
                     }
                     else
                     {
@@ -150,31 +139,35 @@ public class Transactions  {
         System.out.println(String.format("Thank you for shopping with us. Your change is %.2f %n", Double.valueOf(workingBalance / 100.00)));
         totalBalance -= workingBalance;
 
-
         // Update Vending Log
-        try (
-                PrintWriter writeFile = new PrintWriter(new FileOutputStream(vendingLog, true));
-        ) {
-
-            writeFile.println(LocalDateTime.now() + String.format(" Give Change: $%.2f %.2f %n", Double.valueOf(workingBalance / 100.00),  0.00));
-
-        } catch (Exception ex) {
-            // Alligator Code
-        }
-
+        updateLog("","",0, workingBalance,2);
         workingBalance = 0;
     }
 
-    public static void updateLog(LoadInventory productList){
+    public static void updateLog( String name, String slotLocation,int price, int workingBalance, int reportHeader){
 
         File vendingLog = new File("vending.log");
-
+        LocalDateTime myDateTimeObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss a");
+        String formattedDate = myDateTimeObj.format(myFormatObj);
 
         try (
                 PrintWriter writeFile = new PrintWriter(new FileOutputStream(vendingLog, true));
         ) {
-
-            writeFile.println(LocalDateTime.now() + "");
+            switch (reportHeader) {
+                case 0:
+                    writeFile.println(formattedDate + String.format(" FEED MONEY: $%.2f $%.2f %n", Double.valueOf(price / 100.00), Double.valueOf(workingBalance / 100.00)));
+                    break;
+                case 1:
+                    writeFile.println(formattedDate+ String.format(" %s  %s $%.2f $%.2f %n", name, slotLocation, Double.valueOf(price / 100.00), Double.valueOf(workingBalance / 100.00)));
+                    break;
+                case 2:
+                    writeFile.println(formattedDate + String.format(" Give Change: $%.2f %.2f %n", Double.valueOf(workingBalance / 100.00),  0.00));
+                    break;
+                default:
+                    writeFile.println(formattedDate );
+                    break;
+            }
 
         } catch (Exception ex) {
             // Alligator Code
