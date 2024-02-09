@@ -11,8 +11,8 @@ public class MainMenu extends LoadInventory{
         String menuChoice = "";
 
         // Create instance of LoadInventory and run it's main method to create Products
-        LoadInventory li = new LoadInventory();
-        li.main();
+        LoadInventory productsList = new LoadInventory();
+        productsList.load();
 
         // Set loop to continue as long as they do not exit
         while (!menuChoice.equals("3")) {
@@ -21,7 +21,6 @@ public class MainMenu extends LoadInventory{
             System.out.println("(3) Exit");
 
             System.out.println("Please make a selection using the number keys");
-            System.out.println();
             menuChoice = userInput.nextLine();
 
             // Print out list of available items for purchase including price and quantity
@@ -29,8 +28,9 @@ public class MainMenu extends LoadInventory{
 
                 System.out.println("********************");
                 System.out.println();
-                for (int i = 0; i < li.getAllProducts().size(); i++) {
-                    System.out.println(li.getAllProducts().get(i).toString());
+                for (int i = 0; i < productsList.getAllProducts().size(); i++) {
+
+                    System.out.println(productsList.getAllProducts().get(i));
                 }
                 System.out.println();
                 System.out.println("********************");

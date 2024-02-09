@@ -2,22 +2,22 @@ package com.techelevator.product;
 
 public class Duck extends Product{
 
-    public Duck (String slotLocation, String productName, int pennyPrice) {
+    public Duck (String slotLocation, String productName, int pennyPrice, int initialQuantity) {
 
-        super(slotLocation, productName, pennyPrice);
+        super(slotLocation, productName, pennyPrice, initialQuantity);
 
         this.slotLocation = slotLocation;
         this.productName = productName;
         this.pennyPrice = pennyPrice;
+        this.initialQuantity = initialQuantity;
+        this.animalSound = "Quack, Quack, Splash!";
 
-
-        String animalSound = "Quack, Quack, Splash!";
-        int remainingQuantity = 5;
 
     }
 
+
     @Override
     public String toString(){
-        return slotLocation + " "+productName +" "+ pennyPrice ;
+        return slotLocation + " "+productName +" "+ String.format( "%.2f", Double.valueOf( pennyPrice /100.00)) ;
     }
 }

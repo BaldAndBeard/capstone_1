@@ -38,11 +38,16 @@ public class LoadInventory {
         return allProducts;
     }
 
-
-
+    public List<String> getAllSlotLocations(){
+        List<String> allSlotLocations = new ArrayList<>();
+        for (Product p :getAllProducts()){
+            allSlotLocations.add(p.getSlotLocation());
+        }
+        return allSlotLocations;
+    }
 
     // METHODS
-    public static void main(/*String[] args*/) {
+    public static void load() {
         // Create a File object using the path
         File inPutFile = new File("vendingmachine.csv");
         // Open the file
@@ -55,20 +60,22 @@ public class LoadInventory {
                 // Assign Values form the Array
                 String slotLocation = array[0].trim();
                 String productName= array[1].trim();
-                int pennyPrice = (int) Double.parseDouble(array[2].trim())* 100;
+                //int pennyPrice = (int) Double.parseDouble(array[2].trim())* 100;
+                int pennyPrice = (int) (Double.parseDouble(array[2].trim())* 100);
                 String productType =array[3].trim();
                 // Add items to the list
                 if(productType.equals("Duck")) {
-                    duckList.add(new Duck(slotLocation, productName, pennyPrice));
+                    duckList.add(new Duck(slotLocation, productName, pennyPrice,5));
+
                 }
                 else if(productType.equals("Penguin")) {
-                    penguinList.add(new Penguin(slotLocation, productName, pennyPrice));
+                    penguinList.add(new Penguin(slotLocation, productName, pennyPrice,5));
                 }
                 else if(productType.equals("Cat")) {
-                    catList.add(new Cat(slotLocation, productName, pennyPrice));
+                    catList.add(new Cat(slotLocation, productName, pennyPrice,5));
                 }
                 else if(productType.equals("Pony")) {
-                    ponyList.add( new Pony(slotLocation, productName, pennyPrice));
+                    ponyList.add( new Pony(slotLocation, productName, pennyPrice,5));
                 }
             }
         } catch (FileNotFoundException e) {
