@@ -11,13 +11,5 @@ public class Duck extends Product{
         this.pennyPrice = pennyPrice;
         this.initialQuantity = initialQuantity;
         this.animalSound = "Quack, Quack, Splash!";
-
-
-    }
-
-
-    @Override
-    public String toString(){
-        return slotLocation + " "+productName +" "+ String.format( "%.2f", Double.valueOf( pennyPrice /100.00)) ;
     }
 }

@@ -1,17 +1,25 @@
 package com.techelevator;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class Transactions  {
 
     private static int workingBalance = 0;
     private static int totalBalance = 0;
-    private static LoadInventory productsList = new LoadInventory();
+
+    private static File vendingLog = new File("vending.log");
+
+    public static int getTotalBalance () {
+        return totalBalance;
+    }
 
     // DISPLAY TRANSACTION MENU ABD CALL RELEVANT METHODS
-    public static void transactionMenu(Scanner userInput) {
+    public static void transactionMenu(Scanner userInput, LoadInventory productsList) {
         String menuChoice = "";
-        // Create instance of LoadInventory and run it's main method to create Products
 
         while (!menuChoice.equals("3")) {
             System.out.println("(1) Feed Money");
@@ -25,9 +33,10 @@ public class Transactions  {
                  feedMoney(userInput);
             } else if (menuChoice.equals("2")) {
                 // Select Product Methods
-                selectProduct(userInput);
+                selectProduct(userInput, productsList);
             } else if (menuChoice.equals("3")) {
                 // Finish Transaction Methods
+                finishTransaction();
             } else {
                 System.out.println("That was not a valid choice. Please try again.");
                // menuChoice = userInput.nextLine();
@@ -42,21 +51,31 @@ public class Transactions  {
         int amountEntered = (int) (Double.parseDouble(userInput.nextLine()) * 100);
 
         workingBalance += amountEntered;
+        totalBalance += amountEntered;
 
         System.out.println(String.format("Current Money Provided : %.2f$ %n ",Double.valueOf(workingBalance / 100.00)));
 
+        // Update Vending Log
+        try (
+                PrintWriter writeFile = new PrintWriter(new FileOutputStream(vendingLog, true));
+        ) {
+
+            writeFile.println(LocalDateTime.now() + String.format(" FEED MONEY: $%.2f $%.2f %n", Double.valueOf(amountEntered / 100.00), Double.valueOf(workingBalance / 100.00)));
+
+        } catch (Exception ex) {
+            // Alligator Code
+        }
+
     }
 
-    public static void selectProduct(Scanner userInput) {
+    public static void selectProduct(Scanner userInput, LoadInventory productsList) {
 
 
-        System.out.println("********************");
-        System.out.println();
+        System.out.println(String.format("********************%n"));
         for (int i = 0; i < productsList.getAllProducts().size(); i++) {
             System.out.println(productsList.getAllProducts().get(i));
         }
-        System.out.println();
-        System.out.println("********************");
+        System.out.println(String.format("%n********************"));
 
         System.out.println("Please enter a code to select an item ");
 
@@ -73,14 +92,14 @@ public class Transactions  {
         }
         if(itemExist)
         {
-                dispenseProduct(selectedItem);
+                dispenseProduct(selectedItem, productsList);
         }
         else {
             System.out.println(String.format("The product code doesn't exist. Please try again.%nReturn to the Purchase menu %n"));
         }
     }
 
-    public static void dispenseProduct(String selectedItem) {
+    public static void dispenseProduct(String selectedItem, LoadInventory productsList) {
 
         for (int i = 0; i < productsList.getAllProducts().size(); i++) {
 
@@ -93,18 +112,30 @@ public class Transactions  {
                 {
                     quantity--;
                     int price = productsList.getAllProducts().get(i).getPennyPrice();
-                    totalBalance = workingBalance - price;
-                    if (totalBalance >= price) {
+                    if (workingBalance >= price) {
                         productsList.getAllProducts().get(i).setInitialQuantity(quantity);
                         String name = productsList.getAllProducts().get(i).getProductName();
                         String sound = productsList.getAllProducts().get(i).getAnimalSound();
-                        workingBalance = totalBalance;
+                        // Decrease workingBalance by the price of the item purchased
+                        workingBalance -= price;
+                        // Increase totalBalance by the price of the item purchased
+                        totalBalance += price;
                         System.out.println(productsList.getAllProducts().get(i).getInitialQuantity());
-                        System.out.println(String.format("Selected Item is %s, Price is %.2f, Remaining Balance is %.2f %n%s%n ", name, Double.valueOf(price / 100.00), Double.valueOf(totalBalance / 100.00), sound));
+                        System.out.println(String.format("Selected Item is %s, Price is %.2f, Remaining Balance is %.2f %n%s%n ", name, Double.valueOf(price / 100.00), Double.valueOf(workingBalance / 100.00), sound));
+
+
+                        // Update Vending Log
+                        try (PrintWriter writeFile = new PrintWriter(new FileOutputStream(vendingLog, true))) {
+
+                            writeFile.println(LocalDateTime.now() + String.format(" %s  %s $%.2f $%.2f %n", name, slotLocation, Double.valueOf(price / 100.00), Double.valueOf(workingBalance / 100.00)));
+
+                        } catch (Exception ex) {
+                            // Alligator Code
+                        }
                     }
                     else
                     {
-                    System.out.println(String.format("Insufficient Balance: The Price of the Item selected is %.2f, Remaining Balance is %.2f %n ", Double.valueOf(price / 100.00), Double.valueOf(totalBalance / 100.00)));
+                    System.out.println(String.format("Insufficient Balance: The Price of the Item selected is %.2f, Remaining Balance is %.2f %n ", Double.valueOf(price / 100.00), Double.valueOf(workingBalance / 100.00)));
                     }
                 }
                 else
@@ -112,6 +143,41 @@ public class Transactions  {
                     System.out.println(String.format("The product is currently Sold Out. Please try again.%nReturn to the Purchase menu %n"));
                 }
             }
+        }
+    }
+
+    public static void finishTransaction() {
+        System.out.println(String.format("Thank you for shopping with us. Your change is %.2f %n", Double.valueOf(workingBalance / 100.00)));
+        totalBalance -= workingBalance;
+
+
+        // Update Vending Log
+        try (
+                PrintWriter writeFile = new PrintWriter(new FileOutputStream(vendingLog, true));
+        ) {
+
+            writeFile.println(LocalDateTime.now() + String.format(" Give Change: $%.2f %.2f %n", Double.valueOf(workingBalance / 100.00),  0.00));
+
+        } catch (Exception ex) {
+            // Alligator Code
+        }
+
+        workingBalance = 0;
+    }
+
+    public static void updateLog(LoadInventory productList){
+
+        File vendingLog = new File("vending.log");
+
+
+        try (
+                PrintWriter writeFile = new PrintWriter(new FileOutputStream(vendingLog, true));
+        ) {
+
+            writeFile.println(LocalDateTime.now() + "");
+
+        } catch (Exception ex) {
+            // Alligator Code
         }
     }
 

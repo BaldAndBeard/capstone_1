@@ -10,14 +10,6 @@ public class Cat extends Product{
         this.productName = productName;
         this.pennyPrice = pennyPrice;
         this.initialQuantity = initialQuantity;
-
-        String animalSound = "Meow, Meow, Meow!";
-
-
+        this.animalSound = "Meow, Meow, Meow!";
     }
-    @Override
-    public String toString(){
-        return slotLocation + " "+productName +" "+ String.format( "%.2f", Double.valueOf(pennyPrice/100.00)) ;
-    }
-
 }

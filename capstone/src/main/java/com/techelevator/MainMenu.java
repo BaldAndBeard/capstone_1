@@ -1,11 +1,15 @@
 package com.techelevator;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class MainMenu {
 
     // Display Main Menu and Call relevant methods
-    public static void displayMenu () {
+    public static void run() {
         Scanner userInput = new Scanner(System.in);
         String menuChoice = "";
 
@@ -34,17 +38,28 @@ public class MainMenu {
                 System.out.println();
                 System.out.println("********************");
 
-            // Run Transaction Class methods
+                // Run Transaction Class methods
             } else if (menuChoice.equals("2")) {
 
-                Transactions.transactionMenu(userInput);
+                Transactions.transactionMenu(userInput, productsList);
 
-            // Exit and Close Program
+                // Exit and Close Program
             } else if (menuChoice.equals("3")) {
 
                 System.exit(1);
 
-            // Warn user and repeat loop
+                // Hidden Menu Option that shows total balance of Vending Machine
+            } else if (menuChoice.equals("4")) {
+//                for (int i = 0; i < productsList.getAllProducts().size(); i++) {
+//
+//                    System.out.println(productsList.getAllProducts().get(i).getProductName() + "," + (5 - productsList.getAllProducts().get(i).getInitialQuantity()));
+//                }
+//
+//                System.out.println(String.format("%nTotal Balance: %.2f", ((double) Transactions.getTotalBalance() / 100)));
+
+                createSalesReport(productsList);
+
+                // Warn user and repeat loop
             } else {
                 System.out.println("That was not a valid choice. Please try again.");
             }
@@ -52,5 +67,19 @@ public class MainMenu {
 
     }
 
+    public static void createSalesReport(LoadInventory productsList) {
+        String salesReportName = "Sales Report: " + LocalDateTime.now();
+        try (PrintWriter salesReport = new PrintWriter(new FileOutputStream(salesReportName, false))) {
 
+            for (int i = 0; i < productsList.getAllProducts().size(); i++) {
+
+                salesReport.println(productsList.getAllProducts().get(i).getProductName() + "," + (5 - productsList.getAllProducts().get(i).getInitialQuantity()));
+            }
+
+            System.out.println(String.format("%nTotal Balance: %.2f", ((double) Transactions.getTotalBalance() / 100)));
+        } catch (FileNotFoundException fnf) {
+            // Alligator Code
+
+        }
+    }
 }

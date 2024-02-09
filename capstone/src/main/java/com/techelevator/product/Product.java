@@ -51,7 +51,8 @@ public abstract class Product {
 
     public Product(String slotLocation, String productName, int pennyPrice, int initialQuantity) {}
 
-
-
-
+    @Override
+    public String toString(){
+        return slotLocation + " "+productName +" "+ String.format( "%.2f", Double.valueOf(pennyPrice/100.00)) ;
+    }
 }

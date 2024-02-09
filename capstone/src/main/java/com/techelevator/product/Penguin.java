@@ -10,14 +10,6 @@ public class Penguin extends Product{
         this.productName = productName;
         this.pennyPrice = pennyPrice;
         this.initialQuantity = initialQuantity;
-        String animalSound = "Squawk, Squawk, Whee!";
-
-
+        this.animalSound = "Squawk, Squawk, Whee!";
     }
-
-    @Override
-    public String toString(){
-        return slotLocation + " "+productName +" "+String.format( "%.2f", Double.valueOf((double) pennyPrice/100.00));
-    }
-
 }
