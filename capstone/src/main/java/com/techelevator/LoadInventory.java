@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class LoadInventory {
+    private static final int INITIAL_QUANTITY = 5;
     private static List duckList = new ArrayList<>();
     private static List penguinList = new ArrayList<>();
     private static List catList = new ArrayList<>();
     private static List ponyList = new ArrayList<>();
+
 
     // GETTERS
     public List<Duck> getDuckList(){
@@ -77,17 +79,17 @@ public class LoadInventory {
                 String productType =array[3].trim();
                 // Add items to the list
                 if(productType.equals("Duck")) {
-                    duckList.add(new Duck(slotLocation, productName, pennyPrice,5));
+                    duckList.add(new Duck(slotLocation, productName, pennyPrice, INITIAL_QUANTITY));
 
                 }
                 else if(productType.equals("Penguin")) {
-                    penguinList.add(new Penguin(slotLocation, productName, pennyPrice,5));
+                    penguinList.add(new Penguin(slotLocation, productName, pennyPrice, INITIAL_QUANTITY));
                 }
                 else if(productType.equals("Cat")) {
-                    catList.add(new Cat(slotLocation, productName, pennyPrice,5));
+                    catList.add(new Cat(slotLocation, productName, pennyPrice, INITIAL_QUANTITY));
                 }
                 else if(productType.equals("Pony")) {
-                    ponyList.add( new Pony(slotLocation, productName, pennyPrice,5));
+                    ponyList.add( new Pony(slotLocation, productName, pennyPrice, INITIAL_QUANTITY));
                 }
             }
         } catch (FileNotFoundException e) {
