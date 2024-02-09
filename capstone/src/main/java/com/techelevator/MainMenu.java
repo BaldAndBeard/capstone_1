@@ -2,8 +2,7 @@ package com.techelevator;
 
 import java.util.Scanner;
 
-public class MainMenu extends LoadInventory{
-
+public class MainMenu {
 
     // Display Main Menu and Call relevant methods
     public static void displayMenu () {

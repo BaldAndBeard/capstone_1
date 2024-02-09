@@ -2,7 +2,7 @@ package com.techelevator;
 
 import java.util.Scanner;
 
-public class Transactions extends LoadInventory {
+public class Transactions  {
 
     private static int workingBalance = 0;
     private static int totalBalance = 0;
