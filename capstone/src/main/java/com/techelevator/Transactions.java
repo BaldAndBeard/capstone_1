@@ -17,6 +17,10 @@ public class Transactions  {
         return totalBalance;
     }
 
+    public static int getWorkingBalance() {
+        return workingBalance;
+    }
+
     // DISPLAY TRANSACTION MENU ABD CALL RELEVANT METHODS
     public static void transactionMenu(Scanner userInput, LoadInventory productsList) {
         String menuChoice = "";
@@ -30,10 +34,21 @@ public class Transactions  {
 
             if (menuChoice.equals("1")) {
                 // Feed Money Methods
-                 feedMoney(userInput);
+                System.out.println("Please enter the amount of money you wish to use in whole dollar amounts. Whatever you don't spend will be given as change when you return to the main menu.");
+                feedMoney(userInput.nextLine());
             } else if (menuChoice.equals("2")) {
+
+                System.out.println("*******************************************");
+                System.out.println(String.format( "%s %18s %7s %10s ","Slot", "Product Name","Price", "Quantity" ));
+                for (int i = 0; i < productsList.getAllProducts().size(); i++) {
+                    String slotLocation = productsList.getAllProducts().get(i).getSlotLocation();
+                    int quantity  = productsList.getAllProducts().get(i).getInitialQuantity();
+                    String name = productsList.getAllProducts().get(i).getProductName();
+                    int price = productsList.getAllProducts().get(i).getPennyPrice();
+                    System.out.println(String.format( "%s %20s $%6.2f %4d ",slotLocation, name,Double.valueOf(price / 100.00), quantity ));
+                }
                 // Select Product Methods
-                selectProduct(userInput, productsList);
+                selectProduct(userInput.nextLine(), productsList);
             } else if (menuChoice.equals("3")) {
                 // Finish Transaction Methods
                 finishTransaction();
@@ -45,10 +60,9 @@ public class Transactions  {
     }
 
     // ACCEPT MONEY FROM USER AND UPDATE workingBalance
-    public static void feedMoney(Scanner userInput) {
-        System.out.println("Please enter the amount of money you wish to use. Whatever you don't spend will be given as change when you return to the main menu.");
+    public static void feedMoney(String userInput) {
 
-        int amountEntered = (int) (Double.parseDouble(userInput.nextLine()) * 100);
+        int amountEntered = (int) (Double.parseDouble(userInput) * 100);
 
         workingBalance += amountEntered;
         totalBalance += amountEntered;
@@ -60,22 +74,14 @@ public class Transactions  {
 
     }
 
-    public static void selectProduct(Scanner userInput, LoadInventory productsList) {
+    public static void selectProduct(String userInput, LoadInventory productsList) {
 
-        System.out.println("*******************************************");
-        System.out.println(String.format( "%s %18s %7s %10s ","Slot", "Product Name","Price", "Quantity" ));
-        for (int i = 0; i < productsList.getAllProducts().size(); i++) {
-            String slotLocation = productsList.getAllProducts().get(i).getSlotLocation();
-            int quantity  = productsList.getAllProducts().get(i).getInitialQuantity();
-            String name = productsList.getAllProducts().get(i).getProductName();
-            int price = productsList.getAllProducts().get(i).getPennyPrice();
-            System.out.println(String.format( "%s %20s %6.2f$ %4d ",slotLocation, name,Double.valueOf(price / 100.00), quantity ));
-        }
+
         System.out.println("*******************************************");
 
         System.out.println("Please enter a code to select an item ");
 
-        String selectedItem = userInput.nextLine().trim();
+        String selectedItem = userInput.trim();
 
         boolean itemExist = false;
 
@@ -138,9 +144,23 @@ public class Transactions  {
     public static void finishTransaction() {
         System.out.println(String.format("Thank you for shopping with us. Your change is %.2f %n", Double.valueOf(workingBalance / 100.00)));
         totalBalance -= workingBalance;
+        int quarters = 0;
+        int dimes = 0;
+        int nickels = 0;
 
         // Update Vending Log
         updateLog("","",0, workingBalance,2);
+
+        quarters = workingBalance/25;
+        workingBalance -= (quarters * 25);
+        dimes = workingBalance/10;
+        workingBalance -= (dimes * 10);
+        nickels = workingBalance/5;
+        workingBalance -= (nickels * 5);
+
+
+        System.out.println(String.format("Your change is %d Quarters, %d Dimes, and %d Nickels", quarters, dimes, nickels));
+
         workingBalance = 0;
     }
 

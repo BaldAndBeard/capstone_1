@@ -1,9 +1,11 @@
 package com.techelevator;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class MainMenu {
@@ -62,19 +64,20 @@ public class MainMenu {
 
     }
 
+    // ChatGPT taught Jay how to use DateTimeFormatter
     public static void createSalesReport(LoadInventory productsList) {
-        String salesReportName = "Sales Report: " + LocalDateTime.now();
-        try (PrintWriter salesReport = new PrintWriter(new FileOutputStream(salesReportName, false))) {
+
+        String salesReportName = "Sales_Report_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")) + ".log";
+        File salesReportFile = new File(salesReportName);
+        try (PrintWriter salesReport = new PrintWriter(new FileOutputStream(salesReportFile))) {
 
             for (int i = 0; i < productsList.getAllProducts().size(); i++) {
-
                 salesReport.println(productsList.getAllProducts().get(i).getProductName() + "," + (5 - productsList.getAllProducts().get(i).getInitialQuantity()));
             }
 
-            System.out.println(String.format("%nTotal Balance: %.2f", ((double) Transactions.getTotalBalance() / 100)));
+            salesReport.println(String.format("%nTotal Balance: %.2f", ((double) Transactions.getTotalBalance() / 100)));
         } catch (FileNotFoundException fnf) {
-            // Alligator Code
-
+            System.out.println(fnf.getMessage());
         }
     }
 }
