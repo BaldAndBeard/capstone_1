@@ -30,7 +30,7 @@ public class MainMenu {
             // Print out list of available items for purchase including price and quantity
             if (menuChoice.equals("1")) {
 
-                System.out.println("*******************************************");
+                System.out.println("********************************************");
                 System.out.println(String.format( "%s %18s %7s %10s ","Slot", "Product Name","Price", "Quantity" ));
                 for (int i = 0; i < productsList.getAllProducts().size(); i++) {
                     String slotLocation = productsList.getAllProducts().get(i).getSlotLocation();
@@ -39,11 +39,12 @@ public class MainMenu {
                     int price = productsList.getAllProducts().get(i).getPennyPrice();
                     System.out.println(String.format( "%s %20s %6.2f$ %4d ",slotLocation, name,Double.valueOf(price / 100.00), quantity ));
                 }
-                System.out.println("*******************************************");
+                System.out.println("********************************************");
 
                 // Run Transaction Class methods
             } else if (menuChoice.equals("2")) {
 
+                System.out.println(String.format("*************** Purchase menu ***************"));
                 Transactions.transactionMenu(userInput, productsList);
 
                 // Exit and Close Program

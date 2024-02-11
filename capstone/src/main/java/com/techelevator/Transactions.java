@@ -6,12 +6,16 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Transactions  {
 
     private static int workingBalance = 0;
     private static int totalBalance = 0;
     private static File vendingLog = new File("vending.log");
+    private static final String FEED_MONEY = "FEED_MONEY";
+    private static final String SELECTED_ITEM = "SELECTED_ITEM";
+    private static final String GIVE_CHANGE = "GIVE_CHANGE";
 
     public static int getTotalBalance () {
         return totalBalance;
@@ -62,15 +66,22 @@ public class Transactions  {
     // ACCEPT MONEY FROM USER AND UPDATE workingBalance
     public static void feedMoney(String userInput) {
 
-        int amountEntered = (int) (Double.parseDouble(userInput) * 100);
+        // Checking for the whole dollar amounts
+        if (Pattern.matches( "^\\d+$", userInput) ) {
 
-        workingBalance += amountEntered;
-        totalBalance += amountEntered;
+            int amountEntered = (int) (Double.parseDouble(userInput) * 100);
 
-        System.out.println(String.format("Current Money Provided : %.2f$ %n ",Double.valueOf(workingBalance / 100.00)));
+            workingBalance += amountEntered;
+            totalBalance += amountEntered;
 
-        // Update Vending Log
-        updateLog("","",amountEntered, workingBalance,0);
+            System.out.println(String.format("Current Money Provided : %.2f$ %n ", Double.valueOf(workingBalance / 100.00)));
+
+            // Update Vending Log
+            updateLog("", "", amountEntered, workingBalance, FEED_MONEY);
+
+        } else {
+            System.out.println("That was not a valid choice. Please try again with whole dollar amounts.");
+        }
 
     }
 
@@ -122,11 +133,11 @@ public class Transactions  {
                         workingBalance -= price;
                         // Increase totalBalance by the price of the item purchased
                         totalBalance += price;
-                        System.out.println(String.format("Remaining quantity :%s",productsList.getAllProducts().get(i).getInitialQuantity()));
+                        System.out.println(String.format("Remaining quantity : %s",productsList.getAllProducts().get(i).getInitialQuantity()));
                         System.out.println(String.format("Selected Item is %s, Price is %.2f, Remaining Balance is %.2f %n%s%n ", name, Double.valueOf(price / 100.00), Double.valueOf(workingBalance / 100.00), sound));
 
                         // Update Vending Log
-                        updateLog(name,slotLocation,price, workingBalance,1);
+                        updateLog(name,slotLocation,price, workingBalance, SELECTED_ITEM);
                     }
                     else
                     {
@@ -149,7 +160,7 @@ public class Transactions  {
         int nickels = 0;
 
         // Update Vending Log
-        updateLog("","",0, workingBalance,2);
+        updateLog("","",0, workingBalance, GIVE_CHANGE);
 
         quarters = workingBalance/25;
         workingBalance -= (quarters * 25);
@@ -164,7 +175,7 @@ public class Transactions  {
         workingBalance = 0;
     }
 
-    public static void updateLog( String name, String slotLocation,int price, int workingBalance, int reportHeader){
+    public static void updateLog( String name, String slotLocation,int price, int workingBalance, String reportHeader){
 
         File vendingLog = new File("vending.log");
         LocalDateTime myDateTimeObj = LocalDateTime.now();
@@ -175,13 +186,13 @@ public class Transactions  {
                 PrintWriter writeFile = new PrintWriter(new FileOutputStream(vendingLog, true));
         ) {
             switch (reportHeader) {
-                case 0:
+                case FEED_MONEY:
                     writeFile.println(formattedDate + String.format(" FEED MONEY: $%.2f $%.2f %n", Double.valueOf(price / 100.00), Double.valueOf(workingBalance / 100.00)));
                     break;
-                case 1:
+                case SELECTED_ITEM:
                     writeFile.println(formattedDate+ String.format(" %s  %s $%.2f $%.2f %n", name, slotLocation, Double.valueOf(price / 100.00), Double.valueOf(workingBalance / 100.00)));
                     break;
-                case 2:
+                case GIVE_CHANGE:
                     writeFile.println(formattedDate + String.format(" Give Change: $%.2f %.2f %n", Double.valueOf(workingBalance / 100.00),  0.00));
                     break;
                 default:
